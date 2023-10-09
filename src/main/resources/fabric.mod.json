@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "runnerups",
+	"version": "${version}",
+	"name": "Runner-Ups",
+	"description": "Justice for the Runner-Ups! This mod adds in some of the mobs that lost the mob vote",
+	"authors": [
+		"JoshXD"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/runnerups/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.joshblue.runnerups.RunnerUps"
+		],
+		"client": [
+			"com.joshblue.runnerups.RunnerUpsClient"
+		],
+		"fabric-datagen": [
+			"com.joshblue.runnerups.RunnerUpsDataGenerator"
+		]
+	},
+	"mixins": [
+		"runnerups.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.22",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
