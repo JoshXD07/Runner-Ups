@@ -7,4 +7,6 @@ import net.minecraft.util.Identifier;
 public class ModModelLayers {
     public static final EntityModelLayer MOOBLOOM =
             new EntityModelLayer(new Identifier(RunnerUps.MOD_ID, "moobloom"), "main");
+    public static final EntityModelLayer GREAT_HUNGER =
+            new EntityModelLayer(new Identifier(RunnerUps.MOD_ID, "great_hunger"), "main");
 }

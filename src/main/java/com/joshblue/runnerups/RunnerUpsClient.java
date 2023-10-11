@@ -15,6 +15,9 @@ public class RunnerUpsClient implements ClientModInitializer {
         EntityRendererRegistry.register(ModEntities.MOOBLOOM, MoobloomRenderer::new);
         EntityModelLayerRegistry.registerModelLayer(ModModelLayers.MOOBLOOM, Moobloom::getTexturedModelData);
 
+        EntityRendererRegistry.register(ModEntities.GREAT_HUNGER, GreatHungerRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(ModModelLayers.GREAT_HUNGER, GreatHunger::getTexturedModelData);
+
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.BUTTERCUP, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTTED_BUTTERCUP, RenderLayer.getCutout());
     }

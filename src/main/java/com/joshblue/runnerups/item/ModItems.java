@@ -17,9 +17,15 @@ public class ModItems {
 
     public static final Item MOOBLOOM_SPAWN_EGG = registerItem("moobloom_spawn_egg",
             new SpawnEggItem(ModEntities.MOOBLOOM, 0xfdd500, 0xfbf8de, new FabricItemSettings()));
+    public static final Item GREAT_HUNGER_SPAWN_EGG = registerItem("great_hunger_spawn_egg",
+            new SpawnEggItem(ModEntities.GREAT_HUNGER, 0x767679, 0x5c5b2b, new FabricItemSettings()));
 
-    private static void addItemsToIngredientItemGroup(FabricItemGroupEntries entries){
+    private static void addItemsToSpawnEggsTab(FabricItemGroupEntries entries){
         entries.add(MOOBLOOM_SPAWN_EGG);
+        entries.add(GREAT_HUNGER_SPAWN_EGG);
+    }
+
+    private static void addItemsToNaturalTab(FabricItemGroupEntries entries){
         entries.add(ModBlocks.BUTTERCUP);
     }
 
@@ -30,6 +36,7 @@ public class ModItems {
     public static void registerModItems() {
         RunnerUps.LOGGER.info("Registering Mod Items for " + RunnerUps.MOD_ID);
 
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(ModItems::addItemsToIngredientItemGroup);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(ModItems::addItemsToSpawnEggsTab);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(ModItems::addItemsToNaturalTab);
     }
 }

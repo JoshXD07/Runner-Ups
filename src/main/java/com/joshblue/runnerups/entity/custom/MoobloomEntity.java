@@ -1,29 +1,35 @@
 package com.joshblue.runnerups.entity.custom;
 
+import com.joshblue.runnerups.block.ModBlocks;
 import com.joshblue.runnerups.entity.ModEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class MoobloomEntity extends AnimalEntity {
@@ -89,6 +95,14 @@ public class MoobloomEntity extends AnimalEntity {
             player.setStackInHand(hand, itemStack2);
             return ActionResult.success(this.getWorld().isClient);
         }
+        if (itemStack.isOf(Items.SHEARS) && this.isShearable()) {
+            this.sheared(SoundCategory.PLAYERS);
+            this.emitGameEvent(GameEvent.SHEAR, player);
+            if (!this.getWorld().isClient) {
+                itemStack.damage(1, player, playerx -> playerx.sendToolBreakStatus(hand));
+            }
+            return ActionResult.success(this.getWorld().isClient);
+        }
         return super.interactMob(player, hand);
     }
 
@@ -104,5 +118,34 @@ public class MoobloomEntity extends AnimalEntity {
     @Override
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
         return ModEntities.MOOBLOOM.create(world);
+    }
+
+    public boolean isShearable() {
+        return this.isAlive() && !this.isBaby();
+    }
+
+
+    public void sheared(SoundCategory shearedSoundCategory) {
+        CowEntity cowEntity;
+        this.getWorld().playSoundFromEntity(null, this, SoundEvents.ENTITY_MOOSHROOM_SHEAR, shearedSoundCategory, 1.0f, 1.0f);
+        if (!this.getWorld().isClient() && (cowEntity = EntityType.COW.create(this.getWorld())) != null) {
+            ((ServerWorld)this.getWorld()).spawnParticles(ParticleTypes.EXPLOSION, this.getX(), this.getBodyY(0.5), this.getZ(), 1, 0.0, 0.0, 0.0, 0.0);
+            this.discard();
+            cowEntity.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
+            cowEntity.setHealth(this.getHealth());
+            cowEntity.bodyYaw = this.bodyYaw;
+            if (this.hasCustomName()) {
+                cowEntity.setCustomName(this.getCustomName());
+                cowEntity.setCustomNameVisible(this.isCustomNameVisible());
+            }
+            if (this.isPersistent()) {
+                cowEntity.setPersistent();
+            }
+            cowEntity.setInvulnerable(this.isInvulnerable());
+            this.getWorld().spawnEntity(cowEntity);
+            for (int i = 0; i < 4; ++i) {
+                this.getWorld().spawnEntity(new ItemEntity(this.getWorld(), this.getX(), this.getBodyY(1.0), this.getZ(), new ItemStack(ModBlocks.BUTTERCUP)));
+            }
+        }
     }
 }
